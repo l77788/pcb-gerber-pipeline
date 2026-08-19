@@ -1,6 +1,6 @@
 # PCB 图片转 Gerber 打样 · 项目归档
 
-把 **PCB_lightgraph** 导出的四层 PNG（丝印 / 阻焊 / 铜层 / 背光）转成标准 **RS-274X Gerber**，打包后上传 **嘉立创** 打样的一整套方案、脚本与验证记录。
+把 **PCB_lightgraph** 导出的四层 PNG（丝印 / 阻焊 / 铜层 / 背光），或直接从**一张彩色原图**经颜色拆层，转为标准 **RS-274X Gerber**，打包后上传 **嘉立创** 打样的一整套方案、脚本与验证记录。
 
 > 浏览器直接看文档入口：👉 **[GitHub Pages](https://l77788.github.io/pcb-gerber-pipeline/)** 👈（收录操作手册 / 自检说明 / 同类调研）
 >
@@ -16,10 +16,13 @@
 | `docs/bvt-selfcheck/index.html` | 自检说明：测试流程、问题定位、结果验证（含对照图） |
 | `docs/similar-projects/index.html` | 同类开源项目调研：图片转 PCB 方案的对比与选择建议 |
 | `scripts/png2gerber.ps1` | **正式转换脚本**（调用 `svg-flatten`，自动识别四层并打包 zip） |
+| `scripts/color_surface.py` | **颜色拆层**：单张彩色原图 → 四层二值 PNG（复用 pcb-art 配色思路） |
+| `scripts/image2gerber.ps1` | **桥接入口**：彩色原图 → 拆层 → 转 Gerber → 打包（可切纯 Python 兜底） |
 | `scripts/converter.py` | 纯 Python 兜底转换器（不依赖 WASM，受限环境可用） |
 | `scripts/renderer.py` | Gerber → PNG 预览渲染器（验证用） |
 | `scripts/make_overview.py` | 把各层输入与渲染拼接成对照总览图 |
-| `examples/demo/` | **真实施例**：艺术图四层 PNG + `demo.ps1` 一键复现 + 预期 Gerber/预览/对照图 |
+| `examples/demo/` | **四层示例**：艺术图四层 PNG + `demo.ps1` 一键复现 + 预期 Gerber/预览/对照图 |
+| `examples/colorbase/` | **彩色原图示例**：`sample.png` + `image2gerber.ps1` 端到端产物与对照总览 |
 | `testdata/` | 自检测试输入 / Gerber / 预览 |
 | `.github/workflows/pages.yml` | GitHub Pages 自动部署工作流 |
 
@@ -50,6 +53,33 @@ powershell -ExecutionPolicy Bypass -File run.ps1 `
 ```powershell
 powershell -ExecutionPolicy Bypass -File examples\demo\demo.ps1
 ```
+
+## 桥接：从一张彩色原图直接出 Gerber
+
+如果你没有现成的分层 PNG，而是只有一张彩色原图，`scripts/image2gerber.ps1` 会把「pcb-art 式颜色拆层」和本仓库的「PNG→Gerber」两条管线首尾相接，一条命令直达可打样产物：
+
+```powershell
+# 普通环境（svg-flatten 高保真）
+powershell -ExecutionPolicy Bypass -File scripts\image2gerber.ps1 `
+  -Image .\photo.png -Name art -Size 80x60 -Scale 0.75
+
+# 受限环境（svg-flatten/WASM 不可用）改用纯 Python 兜底
+powershell -ExecutionPolicy Bypass -File scripts\image2gerber.ps1 `
+  -Image .\photo.png -Name art -Size 80x60 -Scale 0.75 -Fallback
+```
+
+**拆层约定**（`scripts/color_surface.py` 的默认调色板，可改）：每种颜色映射到「铜 / 阻焊 / 丝印 / 背光」的哪些层为白（有内容）：
+
+| 色块 | 默认 RGB | 涂白哪些层 |
+|------|----------|------------|
+| 白-丝印 | `240,240,240` | 丝印 |
+| 铜色-露铜 | `198,122,62` | 铜 |
+| 深绿-有阻焊 | `40,100,46` | 阻焊 |
+| 浅绿-阻焊下有铜 | `128,170,120` | 铜 + 阻焊 |
+| 深蓝-透光 | `18,60,92` | 背光 |
+| 紫-半透带色 | `96,72,150` | 阻焊 + 背光 |
+
+> 注意：这里的「阻焊」为**正片**（涂白 = 有阻焊漆），与仓库 `*_Inverted.png` 的「白=有内容」约定一致。真实打样前务必在 Gerber 查看器里核对阻焊开窗与背光窗口。完整端到端示例与对照图见 `examples/colorbase/`。
 
 ## 受限环境（WASM 不可用）兜底
 
