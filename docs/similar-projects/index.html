@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCB_lightgraph 同类开源项目对比</title>
+<style>
+  :root{
+    --bg:#f5f7fa; --bg2:#ffffff; --ink:#1f2733; --muted:#5b6675;
+    --rule:#e3e8ef; --accent:#0a7c59; --accent2:#b5452f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+  .wrap{max-width:960px;margin:0 auto;padding:32px 20px 60px}
+  header.cover{margin:8px 0 28px}
+  header.cover h1{font-size:26px;margin:0 0 6px;color:var(--ink)}
+  header.cover .sub{color:var(--muted);font-size:14px}
+  .tagline{font-size:14px;color:var(--muted);border-left:4px solid var(--accent);padding-left:12px;margin:14px 0 0}
+  section{margin:34px 0}
+  h2{font-size:19px;border-bottom:2px solid var(--rule);padding-bottom:8px;margin:0 0 14px}
+  .cat{font-size:14px;font-weight:600;color:var(--accent2);margin:24px 0 10px;text-transform:none;letter-spacing:.02em}
+  table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  th,td{text-align:left;padding:12px 14px;vertical-align:top;border-bottom:1px solid var(--rule);font-size:13.5px}
+  th{background:#eef2f7;font-weight:600;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td.name{font-weight:600;white-space:nowrap}
+  td a{color:var(--accent);text-decoration:none;word-break:break-all}
+  td a:hover{text-decoration:underline}
+  td.dim{color:var(--muted);white-space:nowrap}
+  .chip{display:inline-block;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:600}
+  .chip.hi{background:#e4f4ec;color:var(--accent)}
+  .chip.mid{background:#fdf3e3;color:#8a6d17}
+  .chip.lo{background:#f1eef0;color:var(--muted)}
+  footer{margin-top:40px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--rule);padding-top:14px}
+  .note{font-size:13px;color:var(--muted);background:var(--bg2);border:1px solid var(--rule);border-radius:8px;padding:10px 14px;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="cover">
+    <h1>PCB_lightgraph 同类开源项目对比</h1>
+    <div class="sub">围绕「把 2D 图片 / 插画转成可打样的 PCB」这一用途，在 GitHub 上检索到的可参考项目</div>
+    <div class="tagline">PCB_lightgraph 是一键把 2D 插画转成可制造 PCB 分层图纸的桌面工具，自动拆分为铜层 / 阻焊 / 丝印 / 背透光四层，支持单面 5 色 + 透光。以下按「工作方式」分区对比同类项目。</div>
+  </header>
+
+  <section>
+    <h2>最直接同类：图片 → PCB 分层 / Gerber</h2>
+    <div class="cat">与 PCB_lightgraph 定位最接近的一类</div>
+    <table>
+      <thead><tr><th>项目</th><th>技术栈 / 形态</th><th>输入 → 输出</th><th>亮点</th><th>与 lightgraph 差异</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="name">pcb-art</td>
+          <td class="dim">Python，项目整合</td>
+          <td>任意图片 → PCB 各层光绘文件</td>
+          <td>可直接导入 <b>立创 EDA</b> 编辑或下单，输出银行卡尺寸（54×85.6&nbsp;mm）带圆角卡片</td>
+          <td>面向「做一张 PCB 艺术卡片」；单层逻辑由代码管理，无桌面 GUI</td>
+        </tr>
+        <tr>
+          <td class="name">eext-image-contour-to-pcb</td>
+          <td class="dim">嘉立创官方扩展</td>
+          <td>图片 → 轮廓 → 艺术 PCB</td>
+          <td>嘉立创 EDA 专业版官方插件，一张图即可构建艺术 PCB</td>
+          <td>是 EDA 内辅助扩展，不独立拆色/分层，依赖嘉立创生态</td>
+        </tr>
+        <tr>
+          <td class="name">PCB_art_Blue</td>
+          <td class="dim">开源软件流程</td>
+          <td>位图 → 铜层 / 阻焊 / 丝印</td>
+          <td>主图点击吸色做<b>色彩聚类</b>，分色合并降噪，再加标记点成物理层</td>
+          <td>流程更偏 DIY 开源教程，处理艺术画而非「灯光分层」</td>
+        </tr>
+        <tr>
+          <td class="name">gerbolyze</td>
+          <td class="dim">Python + Rust (svg-flatten)</td>
+          <td>SVG / PNG / JPG → Gerber / Excellon</td>
+          <td>矢量无损渲染、支持完整 SVG 1.1，命令行可直接产出制造文件</td>
+          <td>是「转换器」而非完整工具，不做拆层/灯光；<b>本项目管线正使用它</b></td>
+        </tr>
+        <tr>
+          <td class="name">bmp2pcb</td>
+          <td class="dim">命令行工具（经典）</td>
+          <td>单色 BMP → KiCad/Eagle 或 Gerber</td>
+          <td>把 Logo / 图案蚀刻到 PCB 铜层的经典老工具</td>
+          <td>只支持单色位图，无彩色拆分</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>KiCad 体系内的图片 → 艺术 / 丝印</h2>
+    <div class="cat">把图转进 KiCad 封装或丝印/铜层</div>
+    <table>
+      <thead><tr><th>项目</th><th>形态</th><th>输入 → 输出</th><th>亮点</th><th>与 lightgraph 差异</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="name">svg2shenzhen</td>
+          <td class="dim">Inkscape 扩展</td>
+          <td>SVG → KiCad PCB / footprint</td>
+          <td>任意形状、钻孔盘、板框；跨平台（OSX/Win/Linux）</td>
+          <td>面向矢量图与 KiCad 手工流，不自动拆彩色插画</td>
+        </tr>
+        <tr>
+          <td class="name">kicad_art_generator</td>
+          <td class="dim">CLI（包装 svg2mod）</td>
+          <td>SVG / PNG / JPG → KiCad 封装</td>
+          <td>用简单 CLI 把艺术图直接变 KiCad footprint，Linux-first</td>
+          <td>偏「封装生成」，不带灯光分层</td>
+        </tr>
+        <tr>
+          <td class="name">kicad-img2silk (Img2Silk)</td>
+          <td class="dim">KiCad 内转换</td>
+          <td>图片 → 丝印 / 铜 / 阻焊</td>
+          <td>5 种抖动算法（Atkinson / Bayer / Floyd–Steinberg…）+ 板子调色板多色模式</td>
+          <td>专注丝印与抖动艺术，不产完整分层工程</td>
+        </tr>
+        <tr>
+          <td class="name">Gingerbread</td>
+          <td class="dim">Web 工具</td>
+          <td>SVG → KiCad footprint</td>
+          <td>Winterbloom 出品，专为 PCB 首饰/艺术设计</td>
+          <td>高度定制 Winterbloom 用途，非通用拆层</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">参考向：<b>PCB_Business_Card</b>（KiCad 做 PCB 名片的 Gerber 示例）、<b>openjlc / TransJLC</b>（Rust 写的 AD/KiCad → JLC 快速 Gerber 转换，属于「格式转接」而非「图片艺术」，但与本项目「为嘉立创下单准备」的目标相关）。</div>
+  </section>
+
+  <section>
+    <h2>结论</h2>
+    <p style="font-size:14px">
+      在 GitHub 上没有找到与 PCB_lightgraph「桌面 GUI + 四层自动拆分 + 背透光灯光」完全同构的替代品。最接近的是
+      <b>pcb-art</b>（同样面向立创下单、图片→分层）与 <b>gerbolyze</b>（本文档所在管线实际使用的转换引擎）。
+      若你主要用 KiCad 手工做艺术板，<b>svg2shenzhen</b> 和 <b>Img2Silk</b> 值得参考；若是嘉立创生态，官方
+      <b>eext-image-contour-to-pcb</b> 可直接入手。
+    </p>
+  </section>
+
+  <footer>
+    数据来自 GitHub 公开检索 · 生成于 2026-08-19 · 各项目完整信息以对应仓库 README 为准
+  </footer>
+</div>
+</body>
+</html>

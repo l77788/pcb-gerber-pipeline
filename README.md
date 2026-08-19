@@ -6,6 +6,7 @@
 |-----------|------|
 | `docs/gerber-guide/index.html` | 操作手册：安装 → 转换 → 嘉立创下单 全流程 |
 | `docs/bvt-selfcheck/index.html` | 自检说明：测试流程、问题定位、结果验证（含对照图） |
+| `docs/similar-projects/index.html` | 同类开源项目调研：图片转 PCB 方案的对比与选择建议 |
 | `scripts/png2gerber.ps1` | **正式转换脚本**（调用 `svg-flatten`，自动识别四层并打包 zip） |
 | `scripts/converter.py` | 纯 Python 兜底转换器（不依赖 WASM，受限环境可用） |
 | `scripts/renderer.py` | Gerber → PNG 预览渲染器（验证用） |
