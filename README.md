@@ -2,7 +2,9 @@
 
 把 **PCB_lightgraph** 导出的四层 PNG（丝印 / 阻焊 / 铜层 / 背光）转成标准 **RS-274X Gerber**，打包后上传 **嘉立创** 打样的一整套方案、脚本与验证记录。
 
-> 浏览器直接看文档入口：**GitHub Pages** → https://l77788.github.io/pcb-gerber-pipeline/（收录操作手册 / 自检说明 / 同类调研）
+> 浏览器直接看文档入口：👉 **[GitHub Pages](https://l77788.github.io/pcb-gerber-pipeline/)** 👈（收录操作手册 / 自检说明 / 同类调研）
+>
+> 在线地址（复制时只到这一行为止，不要带上右侧括号内文字）：`https://l77788.github.io/pcb-gerber-pipeline/`
 
 ## 目录结构
 
